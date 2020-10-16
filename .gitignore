@@ -1,5 +1,5 @@
-client/
 .git/
 .vscode/
 config/config.env
-node_modules/
+**/node_modules/
+client/build/

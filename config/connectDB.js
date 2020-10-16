@@ -1,13 +1,13 @@
-const mongoose = require('mongoose');
-const dotenv = require('dotenv');
+import { connect } from 'mongoose';
+import { config } from 'dotenv';
 
-dotenv.config({ path: './config/config.env' });
+config({ path: './config/config.env' });
 
 const MONGO_URI = process.env.MONGO_URI;
 
 const connectDB = async () => {
 	try {
-		const conn = await mongoose.connect(MONGO_URI, {
+		const conn = await connect(MONGO_URI, {
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
 			useCreateIndex: true,
@@ -20,4 +20,4 @@ const connectDB = async () => {
 	}
 };
 
-module.exports = connectDB;
+export default connectDB;

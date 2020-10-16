@@ -1,13 +1,14 @@
-const { ApolloServer, ApolloError } = require('apollo-server-express');
-const express = require('express');
-const dotenv = require('dotenv');
-const { typeDefs } = require('./typeDefs');
-const { resolvers } = require('./resolvers');
-const connectDB = require('./config/db');
+import { ApolloServer, ApolloError } from 'apollo-server-express';
+import express, { static as serveStatic } from 'express';
+import { config } from 'dotenv';
+import typeDefs from './typeDefs';
+import resolvers from './resolvers';
+import connectDB from './config/connectDB';
+import path from 'path';
 
-const PORT = process.env.PORT || 3000;
-const NODE_ENV = process.env.NODE_ENV || 'development';
-dotenv.config({ path: './config/config.env' });
+const PORT = process.env.PORT;
+const NODE_ENV = process.env.NODE_ENV;
+config({ path: './config/config.env' });
 
 (async () => {
 	const app = express();
@@ -25,6 +26,15 @@ dotenv.config({ path: './config/config.env' });
 	server.applyMiddleware({ app });
 
 	await connectDB();
+
+	if (process.env.NODE_ENV === 'production') {
+		app.use(serveStatic('client/build'));
+		app.get('*', (_, res) =>
+			res.sendFile('index.html', {
+				root: path.join(__dirname, 'client', 'build'),
+			})
+		);
+	}
 
 	app.listen(
 		PORT,
